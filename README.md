@@ -2,7 +2,7 @@
 
 - Clone this repository
   ```
-  $ git clone https://github.com/Yasamaly/django-techgram.git
+  git clone https://github.com/Yasamaly/django-techgram.git
   ```
   
 - Create Virtual Environment
