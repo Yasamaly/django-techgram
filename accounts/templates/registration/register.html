@@ -1,0 +1,39 @@
+{% extends "../base.html" %} 
+{% load static %}
+{% block links %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock links %}
+
+{% block title %}
+  Блог:Регистрация
+{% endblock title %}
+  
+{% block content %}
+<div class="box-form box-register">
+  <div class="left">
+    <div class="overlay">
+      <h1>Hello World.</h1>
+      
+    </div>
+  </div>
+  <div class="right">
+    <h5>Регистрация</h5>
+    <p>
+      У вас есть учетная запись? <a href="{% url 'login' %}">Авторизоваться</a> 
+    </p>
+    <form class="inputs" method="post" action="{% url 'accounts:register' %}">
+      {% csrf_token %} 
+      {{ form }}
+      <input type="submit" value="Register"/>
+      <input type="hidden" name="next" value="{{ next }}" />
+    </form>
+
+    <br /><br />
+
+    <!-- <div class="remember-me--forget-password">
+      <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+    </div>
+    <br /> -->
+  </div>
+</div>
+{% endblock %}

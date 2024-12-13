@@ -1,0 +1,105 @@
+{% extends './layout.html' %} 
+{% load static %} 
+{% block links %}
+<link rel="stylesheet" href="{% static 'css/index.css' %}" />
+{% endblock links %}
+{% block body %}
+<div class="header">
+  {% if search %}
+    <h1>{{search}}</h1>
+    {% else %}
+    <h1>Все, что вам нужно в мире технологий.👌</h1>
+  {% endif %}
+  <hr>
+</div>
+<div class="messege container">
+  {% for message in messages %}
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>{{ message }}✔</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
+  </div>
+  {% endfor %}
+</div>
+<div class="container blog-content">
+  {% for post in articles %}
+  <article class="postcard dark blue" data-card="{{post.id}}">
+    <a class="postcard__img_link" href="{% url 'blog:singleArt' post.id %}">
+      {% if post.artImage %} 
+        <img
+          class="postcard__img"
+          src="{{ post.artImage.url }}"
+          alt="Изображение статьи"
+        />
+      {% else %}
+        <img
+        class="postcard__img"
+        src="../../media/images/default.jpg"
+        alt="Изображение статьи"
+        />
+      {% endif %}
+    </a>
+    <div class="postcard__text">
+      <h1 class="postcard__title blue"><a href="{% url 'blog:singleArt' post.id %}">{{ post.title }}</a></h1>
+      <div class="postcard__subtitle small">
+          <i class="fas fa-calendar-alt mr-2"></i>{{ post.created|date:"d M Y H:i" }}
+      </div>
+      <div class="postcard__bar"></div>
+      <div class="postcard__preview-txt">
+        {{ post.desc }}
+      </div>
+      <ul class="postcard__tagbox">
+        {% for cat in post.category %}
+        <li class="tag__item"><i class="fas fa-tag mr-2"></i>{{cat}}</li>
+        {% endfor %}
+        {% if user.is_authenticated %}
+          {% if user in post.bookmarks.all %}
+          <li class="tag__item play blue save saved" id="{{ post.pk}}">
+            <i class="fa-regular fa-bookmark"></i><span class="save-txt">Сохранено</span>
+          </li>
+          {% else %}  
+          <li class="tag__item play save blue pointed" id="{{post.id}}"data-bs-toggle="tooltip" data-bs-title="Добавить в закладки">
+            <i class="fa-regular fa-bookmark"></i><span class="save-txt">Сохранить</span>
+          </li>
+          {% endif %}
+          {% if user != post.owner %}
+            {% if user in post.upvote.all %}
+              <li class="tag__item play blue vote voted" data-vote="{{ post.id }}">
+                <i class="fa-solid fa-angle-up"></i><span class="vote-num">{{ post.upvote.count }}</span>
+              </li>
+            {% else %}
+              <li class="tag__item play blue vote" data-vote="{{ post.id }}">
+                <i class="fa-solid fa-angle-up"></i><span class="vote-num">{{ post.upvote.count }}</span>
+              </li>
+            {% endif %}
+          {% else %}
+            <li class="tag__item play blue">
+              <span>{{ post.upvote.count }} голосов</span>
+            </li>
+          {% endif %}
+          {% if user == post.owner %}
+          <li class="tag__item play blue delete pointed" data-delete="{{post.id}}">
+            <i class="fa-regular fa-trash-can"></i>
+          </li>
+          <a href="{% url 'blog:update' post.id %}">
+            <li class="tag__item play blue pointed" data-update="{{post.id}}">
+              <i class="fa-regular fa-pen-to-square"></i> Обновить
+            </li>
+          </a>
+          {% endif %}
+        {% endif %}
+      </ul>
+    </div>
+  </article>
+  {% empty %}
+  {% if search %}
+    <div class="alert alert-info" role="alert">
+      <strong>Ой, статей с таким названием нет 😥...</strong> 
+    </div>
+  {% else %}  
+    <div class="alert alert-info" role="alert">
+      <strong>Сейчас статей нет.</strong> 
+    </div>
+  {% endif %}
+  {% endfor %}
+</div>
+{% endblock body %}

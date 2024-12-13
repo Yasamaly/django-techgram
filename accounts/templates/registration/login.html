@@ -1,0 +1,56 @@
+{% extends "../base.html" %} 
+{% load static %}
+{% block links %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock links %}
+
+{% block title %}
+  Блог:Вход
+{% endblock title %}
+  
+{% block content %}
+<div class="box-form">
+  <div class="left">
+    <div class="overlay">
+      <h1>Hello World.</h1>
+      
+    </div>
+  </div>
+  <div class="right">
+    {% if form.errors %}
+      <p class="error" style="color: #fefefe;">Ваши имя пользователя и пароль не совпали. Пожалуйста, попробуйте снова.</p>
+    {% endif %}
+    {% if next %} 
+    {% if user.is_authenticated %}
+    <div class="alert alert-danger" role="alert">
+      <p class="error" style="color: #fefefe;">
+        Ваша учетная запись не имеет доступа к этой странице. Чтобы продолжить, пожалуйста, войдите
+        в систему с учетной записью, у которой есть доступ.
+      </p>
+    </div>
+    {% else %}
+    <p>Пожалуйста, войдите в систему, чтобы увидеть эту страницу.</p>
+    {% endif %} 
+    {% endif %}
+    <h5>Login</h5>
+    <p>
+      Don't have an account? <a href="{% url 'accounts:register' %}">Создайте свой аккаунт</a> это занимает
+      меньше минуты
+    </p>
+    <form class="inputs" method="post" action="{% url 'login' %}">
+      {% csrf_token %} 
+      {{ form.username.label_tag }} 
+      {{ form.username }} 
+      {{form.password.label_tag }} 
+      {{ form.password }}
+      <input type="submit" value="login"/>
+      <input type="hidden" name="next" value="{{ next }}" />
+    </form>
+    <br />
+    <!-- <div class="remember-me--forget-password">
+      <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+    </div>
+    <br /> -->
+  </div>
+</div>
+{% endblock %}
